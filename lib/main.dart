@@ -112,7 +112,7 @@ class _ButtonModalState extends State<ButtonModal> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Button Pressed'),
+      title: Text('Change Button ${widget.label} Function'),
       content: KeyboardListener(
         autofocus: true,
         focusNode: keyboardListenerFocusNode,
@@ -124,7 +124,10 @@ class _ButtonModalState extends State<ButtonModal> {
           }
           if (value is KeyDownEvent) {
             multiKeyPressed.add(value.logicalKey.keyLabel);
-            pressTest.add(value.logicalKey.keyLabel);
+            print(value.logicalKey.debugName);
+            if (!pressTest.contains(value.logicalKey.keyLabel)) {
+              pressTest.add(value.logicalKey.keyLabel);
+            }
           } else if (value is KeyUpEvent) {
             pressTest.remove(value.logicalKey.keyLabel);
           }
@@ -138,41 +141,48 @@ class _ButtonModalState extends State<ButtonModal> {
           }
         },
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Text('You pressed button ${widget.label}.'),
-            SizedBox(height: 20),
             Text('Multiple Key Pressed: ${lastMultiPress.join(', ')}'),
+            Row(
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        isListening = !isListening;
+                        keyboardListenerFocusNode.requestFocus();
+                      });
+                    },
+                    child: Text(isListening ? "Stop" : "Listen")),
+                ElevatedButton(
+                  child: Text('ABBR'),
+                  onPressed: () {},
+                ),
+                ElevatedButton(
+                  child: Text('RESET'),
+                  onPressed: () {},
+                ),
+                ElevatedButton(
+                  child: Text('PREV'),
+                  onPressed: () {},
+                ),
+                ElevatedButton(
+                  child: Text('NEXT'),
+                  onPressed: () {},
+                ),
+              ],
+            )
           ],
         ),
       ),
       actions: <Widget>[
         ElevatedButton(
-            onPressed: () {
-              setState(() {
-                isListening = !isListening;
-                keyboardListenerFocusNode.requestFocus();
-              });
-            },
-            child: Text(isListening ? "Stop" : "Listen")),
-        ElevatedButton(
-          child: Text('ABBR'),
-          onPressed: () {},
-        ),
-        ElevatedButton(
-          child: Text('RESET'),
-          onPressed: () {},
-        ),
-        ElevatedButton(
-          child: Text('PREV'),
-          onPressed: () {},
-        ),
-        ElevatedButton(
-          child: Text('NEXT'),
-          onPressed: () {},
-        ),
-        ElevatedButton(
           child: Text('OK'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        ElevatedButton(
+          child: Text('Cancel'),
           onPressed: () {
             Navigator.of(context).pop();
           },
